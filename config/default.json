@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb://mongo:27017",
+  "jwtSecret": "MIjYTjrOrt7S+/Z9fpTx0eB9MgKuH2esUiNyTlBFc3tRBDTql8mb0qNra8ZImhkWkg6Un8fZewEUw+TnbL4XoCjgYMN51kNxm/Vr3s5NXAp4gy1+OpwqZUoV3tiMnFRjy/UsFnznZn96PoLqBiQHAF3linqpZIpiCefg+UIvTbdSyfSGb9qkrcYVQdGqUaDquA3QtH8RE3GCoka1HJMxg3oOcTVnB9+TrVk5toWuFVS6tjvKVw8u0lmTQKyfs9Pobhn/0sRSPSlBpqwb8Uy4GNYIqgziblLTcUN8DrLGu3vpnUwHT2XUHfBPe1p0Bl3ViJ5oxPeqd/Z8XmEDSasT1Q=="
+}

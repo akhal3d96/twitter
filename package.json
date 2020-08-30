@@ -1,0 +1,29 @@
+{
+  "name": "simple-twitter-clone",
+  "version": "1.0.0",
+  "description": "A very simple, minimal Twitter clone",
+  "main": "server.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.11"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.3"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server"
+  },
+  "author": "Ahmed Khaled",
+  "license": "MIT"
+}

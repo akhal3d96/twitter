@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  mongo:
+    image: mongo:4.2.6-bionic
+    volumes:
+      - mongo_volume:/data/db
+    restart: always
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 127.0.0.1:8081:8081
+    depends_on: 
+      - mongo
+  web:
+    image: node:14.0.0-stretch 
+    restart: always
+    working_dir: "/app"
+    env_file: 
+      - ./.env
+    ports: 
+      - 3000:3000
+    entrypoint: npx nodemon ./server.js localhost 3000
+    volumes: 
+      - "./node_modules:/app/node_modules"
+      - "./:/app"
+    depends_on: 
+      - mongo
+volumes:
+  mongo_volume:
