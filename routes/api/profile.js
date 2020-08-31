@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const auth = require('../../middleware/auth')
 const Profile = require('../../models/Profile')
-const { check, validationResult } = require('express-validator/check')
+const User = require('../../models/User')
+const { check, validationResult } = require('express-validator')
 const sendError = require('../sendError')
 
 function checkDate (value) {
@@ -69,7 +70,7 @@ router.post(
   }
 )
 
-// @route   GET /api/aprofile
+// @route   GET /api/profile
 // @desc    GET all profiles
 // @access  Public
 router.get('/', async (req, res) => {
@@ -78,7 +79,7 @@ router.get('/', async (req, res) => {
     res.json(profiles)
   } catch (error) {
     console.error(error.message)
-    sendError(res, 'Server Error', 500)
+    return sendError(res, 'Server Error', 500)
   }
 })
 
@@ -86,12 +87,37 @@ router.get('/', async (req, res) => {
 // @desc    GET profile by user id
 // @access  Public
 router.get('/user/:userId', async (req, res) => {
+  const user = req.params.userId
+  const errorMsg = `There's no profile for user ${user}`
+
   try {
-    const profile = await Profile.findOne({ user: req.params.userId })
-    res.json(profiles)
+    const profile = await Profile.findOne({ user })
+
+    if (!profile) return sendError(res, errorMsg)
+
+    res.json(profile)
   } catch (error) {
     console.error(error.message)
-    sendError(res, 'Server Error', 500)
+    return sendError(res, errorMsg)
+  }
+})
+
+// @route   DELETE /api/profile
+// @desc    Delete profile, user and tweets
+// @access  Public
+router.delete('/', auth, async (req, res) => {
+  const user = req.user.id
+  try {
+    // Remove profile
+    await Profile.findOneAndDelete({ user })
+
+    // Remove user
+    await User.findByIdAndDelete(user)
+
+    res.json({ msg: `User ${user} was removed.` })
+  } catch (error) {
+    console.error(error.message)
+    return sendError(res, 'Server Error', 500)
   }
 })
 
