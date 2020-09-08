@@ -9,6 +9,12 @@ const schema = {
     type: String,
     required: true
   },
+  reply_to: {
+    tweet: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'tweet'
+    }
+  },
   likes: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,

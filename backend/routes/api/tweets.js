@@ -33,8 +33,6 @@ router.post('/',
       console.error(error.message)
       return sendError(res, 'Server Error', 500)
     }
-
-    res.send('Tweets route')
   }
 )
 
@@ -94,6 +92,95 @@ router.delete(
       if (error.kind === 'ObjectId') {
         return sendError(res, errorMsg)
       }
+      return sendError(res, 'Server Error', 500)
+    }
+  }
+)
+
+// @route   PUT api/tweets/like/:tweetId
+// @desc    Like a post
+// @access  Private
+router.put(
+  '/like/:tweetId',
+  auth,
+  async (req, res) => {
+    try {
+      const user = req.user.id
+      const tweet = await Tweet.findById(req.params.tweetId)
+
+      // Check if it was previously liked by this user
+      if (tweet.likes.find(like => like.user.toString() === user)) return sendError(res, 'Tweet is already liked')
+
+      tweet.likes.unshift({ user })
+
+      await tweet.save()
+
+      res.json(tweet.likes)
+    } catch (error) {
+      console.error(error.message)
+      return sendError(res, 'Server Error')
+    }
+  }
+)
+
+// @route   PUT api/tweets/unlike/:tweetId
+// @desc    Unlike a post
+// @access  Private
+router.put(
+  '/unlike/:tweetId',
+  auth,
+  async (req, res) => {
+    try {
+      const user = req.user.id
+      const tweet = await Tweet.findById(req.params.tweetId)
+
+      // Check if it was previously liked by this user
+      if (!tweet.likes.find(like => like.user.toString() === user)) return sendError(res, 'Tweet isn\'t liked to be unliked')
+
+      tweet.likes = tweet.likes.filter(like => like.user.toString() !== user)
+
+      await tweet.save()
+
+      res.json(tweet.likes)
+    } catch (error) {
+      console.error(error.message)
+      return sendError(res, 'Server Error')
+    }
+  }
+)
+
+// @route   POST api/tweets/reply/:tweetId
+// @desc    create a tweet
+// @access  Private
+router.post('/reply/:tweetId',
+  [
+    auth,
+    [
+      check('text', 'Text is required').notEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) return sendError(res, errors.array())
+
+    const user = req.user.id
+
+    try {
+      const tweet = await Tweet.findById(req.params.tweetId)
+      const reply = Tweet({
+        text: req.body.text,
+        reply_to: {
+          tweet: tweet.id
+        },
+        user
+      })
+      tweet.replies.unshift({ tweet: reply.id })
+      await reply.save()
+      await tweet.save()
+      res.json(tweet)
+    } catch (error) {
+      console.error(error.message)
       return sendError(res, 'Server Error', 500)
     }
   }
